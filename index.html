@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Save the Date</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;600&family=Great+Vibes&display=swap" rel="stylesheet">
+
+    <style>
+        /* RESET & BASE */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #f0f0f0; /* Darker background for screen viewing only */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        /* CARD DIMENSIONS (5x7 inches) */
+        .card {
+            width: 5in;
+            height: 7in;
+            background-color: white;
+            position: relative;
+            padding: 0.5in; /* Margin inside the card */
+            color: #2c3e50;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); /* Drop shadow for screen view */
+        }
+
+        /* DECORATIVE BORDER */
+        .border-frame {
+            position: absolute;
+            top: 0.25in;
+            left: 0.25in;
+            right: 0.25in;
+            bottom: 0.25in;
+            border: 1px solid #bfa378; /* Gold/Tan color */
+            z-index: 1;
+        }
+        
+        .border-frame::after {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            right: 4px;
+            bottom: 4px;
+            border: 1px solid #bfa378;
+        }
+
+        /* TYPOGRAPHY */
+        .header-text {
+            font-size: 1rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            z-index: 2;
+        }
+
+        .main-title {
+            font-family: 'Great Vibes', cursive; /* Script Font */
+            font-size: 4.5rem;
+            line-height: 1.2;
+            color: #bfa378;
+            margin-bottom: 1rem;
+            z-index: 2;
+        }
+
+        .names {
+            font-size: 2.2rem;
+            font-weight: 300;
+            margin-bottom: 1.5rem;
+            z-index: 2;
+        }
+
+        .names span {
+            font-style: italic;
+            font-weight: 600;
+            color: #bfa378;
+        }
+
+        .date-section {
+            border-top: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            padding: 1rem 2rem;
+            margin-bottom: 1.5rem;
+            z-index: 2;
+        }
+
+        .date {
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .location {
+            font-size: 1rem;
+            letter-spacing: 1px;
+            margin-top: 0.5rem;
+            font-style: italic;
+            z-index: 2;
+        }
+
+        .footer-text {
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            z-index: 2;
+        }
+
+        /* PRINT CONFIGURATION - CRITICAL */
+        @media print {
+            @page {
+                size: 5in 7in; /* Sets PDF size exactly */
+                margin: 0;     /* Removes browser default margins */
+            }
+
+            body {
+                background: none;
+                height: 100%;
+                width: 100%;
+                display: block;
+            }
+
+            .card {
+                box-shadow: none; /* Remove shadow for print */
+                width: 100%;
+                height: 100%;
+                margin: 0;
+            }
+
+            /* Ensures background colors/graphics print */
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="border-frame"></div>
+
+        <p class="header-text">Please</p>
+        
+        <h1 class="main-title">Save the Date</h1>
+        
+        <div class="names">
+            Alex <span>&</span> Jamie
+        </div>
+
+        <div class="date-section">
+            <div class="date">September 24, 2026</div>
+        </div>
+
+        <div class="location">
+            Tuscany, Italy
+        </div>
+
+        <p class="footer-text">Formal Invitation to Follow</p>
+    </div>
+
+</body>
+</html>
