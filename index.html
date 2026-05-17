@@ -1,179 +1,272 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
     <meta charset="UTF-8">
-    <title>Save the Date</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;600&family=Great+Vibes&display=swap" rel="stylesheet">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camilla e Raffaele - Partecipazione</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <style>
-        /* RESET & BASE */
-        * {
-            box-sizing: border-box;
+        :root {
+            --paper-color: #fcfaf7;
+            --olive-green: #7a8d71;
+            --bg-texture: url('https://www.transparenttextures.com/patterns/natural-paper.png');
+        }
+
+        body, html {
             margin: 0;
             padding: 0;
-        }
-
-        body {
-            background-color: #f0f0f0; /* Darker background for screen viewing only */
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background-color: #f4f1ea;
+            background-image: var(--bg-texture);
+            font-family: 'Georgia', serif;
             min-height: 100vh;
-            font-family: 'Cormorant Garamond', serif;
         }
 
-        /* CARD DIMENSIONS (5x7 inches) */
-        .card {
-            width: 5in;
-            height: 7in;
-            background-color: white;
-            position: relative;
-            padding: 0.5in; /* Margin inside the card */
-            color: #2c3e50;
+        /* --- COPERTINA (COVER) --- */
+        #cover {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #fcfaf7;
+            background-image: var(--bg-texture);
+            z-index: 100;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            transition: transform 1.2s ease-in-out, opacity 1s ease;
+        }
+
+        #cover.hidden {
+            transform: translateY(-100%); /* L'effetto "busta che si alza" */
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .cover-content {
             text-align: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1); /* Drop shadow for screen view */
+            padding: 20px;
         }
 
-        /* DECORATIVE BORDER */
-        .border-frame {
-            position: absolute;
-            top: 0.25in;
-            left: 0.25in;
-            right: 0.25in;
-            bottom: 0.25in;
-            border: 1px solid #bfa378; /* Gold/Tan color */
-            z-index: 1;
-        }
-        
-        .border-frame::after {
-            content: '';
-            position: absolute;
-            top: 4px;
-            left: 4px;
-            right: 4px;
-            bottom: 4px;
-            border: 1px solid #bfa378;
-        }
-
-        /* TYPOGRAPHY */
-        .header-text {
-            font-size: 1rem;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            margin-bottom: 1.5rem;
-            z-index: 2;
-        }
-
-        .main-title {
-            font-family: 'Great Vibes', cursive; /* Script Font */
-            font-size: 4.5rem;
-            line-height: 1.2;
-            color: #bfa378;
-            margin-bottom: 1rem;
-            z-index: 2;
-        }
-
-        .names {
-            font-size: 2.2rem;
-            font-weight: 300;
-            margin-bottom: 1.5rem;
-            z-index: 2;
-        }
-
-        .names span {
-            font-style: italic;
-            font-weight: 600;
-            color: #bfa378;
-        }
-
-        .date-section {
-            border-top: 1px solid #ddd;
-            border-bottom: 1px solid #ddd;
-            padding: 1rem 2rem;
-            margin-bottom: 1.5rem;
-            z-index: 2;
-        }
-
-        .date {
+        .recipient-text {
             font-size: 1.5rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            font-weight: 600;
-        }
-
-        .location {
-            font-size: 1rem;
-            letter-spacing: 1px;
-            margin-top: 0.5rem;
+            color: var(--olive-green);
+            margin-bottom: 30px;
             font-style: italic;
-            z-index: 2;
         }
 
-        .footer-text {
-            margin-top: 2rem;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-            z-index: 2;
+        .open-btn {
+            padding: 15px 40px;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background-color: transparent;
+            border: 1px solid var(--olive-green);
+            color: var(--olive-green);
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        /* PRINT CONFIGURATION - CRITICAL */
-        @media print {
-            @page {
-                size: 5in 7in; /* Sets PDF size exactly */
-                margin: 0;     /* Removes browser default margins */
-            }
+        .open-btn:hover {
+            background-color: var(--olive-green);
+            color: white;
+        }
 
-            body {
-                background: none;
-                height: 100%;
-                width: 100%;
-                display: block;
-            }
+        /* --- CONTENUTO PDF --- */
+        #main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 2s ease;
+        }
 
-            .card {
-                box-shadow: none; /* Remove shadow for print */
-                width: 100%;
-                height: 100%;
-                margin: 0;
-            }
+        #main-content.visible {
+            opacity: 1;
+        }
 
-            /* Ensures background colors/graphics print */
-            * {
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
+        #pdf-render-container {
+            position: relative;
+            z-index: 10;
+            margin: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            max-width: 800px;
+            width: 90%;
+        }
+
+        .page-wrapper {
+            position: relative;
+            display: block;
+            width: 100%;
+            box-shadow: 0 15px 45px rgba(0,0,0,0.1);
+            background-color: white;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+        }
+
+        .textLayer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform-origin: 0 0;
+            z-index: 1;
+            pointer-events: auto;
+            user-select: text;
+            -webkit-user-select: text;
+            line-height: 1;
+        }
+
+        .textLayer span {
+            color: transparent;
+            position: absolute;
+            white-space: pre;
+            cursor: text;
+            transform-origin: 0% 0%;
+        }
+
+        .textLayer ::selection {
+            background: rgba(0, 100, 255, 0.25);
+            color: transparent;
+        }
+
+        /* --- FOGLIE --- */
+        .leaf-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .leaf {
+            position: absolute;
+            background-color: #8da383;
+            border-radius: 2px 15px 2px 15px;
+            opacity: 0.6;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); }
+            100% { transform: translateY(110vh) rotate(360deg); }
         }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <div class="border-frame"></div>
-
-        <p class="header-text">Please</p>
-        
-        <h1 class="main-title">Save the Date</h1>
-        
-        <div class="names">
-            Alex <span>&</span> Jamie
+    <!-- Copertina -->
+    <div id="cover">
+        <div class="cover-content">
+            <div class="recipient-text" id="guest-name">
+                Per voi...
+            </div>
+            <button class="open-btn" onclick="openInvitation()">Apri l'invito</button>
         </div>
-
-        <div class="date-section">
-            <div class="date">September 24, 2026</div>
-        </div>
-
-        <div class="location">
-            Tuscany, Italy
-        </div>
-
-        <p class="footer-text">Formal Invitation to Follow</p>
     </div>
 
+    <!-- Contenuto Principale -->
+    <div id="main-content">
+        <div class="leaf-container" id="leaves"></div>
+        <div id="pdf-render-container"></div>
+    </div>
+
+    <script>
+        // 1. GESTIONE PARAMETRI URL
+        function getGuestNames() {
+            const params = new URLSearchParams(window.location.search);
+            const n1 = params.get('nome_1');
+            const n2 = params.get('nome_2');
+
+            if (n1 && n2) {
+                return `Cara ${n1} e Caro ${n2},`;
+            } else if (n1) {
+                return `Gentile ${n1},`;
+            }
+            return "Per voi...";
+        }
+
+        document.getElementById('guest-name').innerText = getGuestNames();
+
+        // 2. APERTURA INVITO
+        function openInvitation() {
+            document.getElementById('cover').classList.add('hidden');
+            document.getElementById('main-content').classList.add('visible');
+        }
+
+        // 3. RENDER PDF (PDF.js)
+        const url = 'assets/wedding_v3.pdf'; 
+        const pdfjsLib = window['pdfjs-dist/build/pdf'];
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        pdfjsLib.getDocument(url).promise.then(pdf => {
+            const container = document.getElementById('pdf-render-container');
+            for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                pdf.getPage(pageNum).then(page => {
+                    const viewport = page.getViewport({ scale: 2 });
+
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'page-wrapper';
+
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    wrapper.appendChild(canvas);
+
+                    const textLayerDiv = document.createElement('div');
+                    textLayerDiv.className = 'textLayer';
+                    textLayerDiv.style.width = viewport.width + 'px';
+                    textLayerDiv.style.height = viewport.height + 'px';
+                    wrapper.appendChild(textLayerDiv);
+
+                    container.appendChild(wrapper);
+
+                    page.render({ canvasContext: ctx, viewport: viewport });
+
+                    page.getTextContent().then(textContent => {
+                        textContent.items.forEach(item => {
+                            if (!item.str) return;
+                            const tx = pdfjsLib.Util.transform(viewport.transform, item.transform);
+                            const fontHeight = Math.sqrt(tx[2] * tx[2] + tx[3] * tx[3]);
+                            const span = document.createElement('span');
+                            span.textContent = item.str;
+                            span.style.cssText = `position:absolute;color:transparent;white-space:pre;cursor:text;left:${tx[4]}px;top:${tx[5] - fontHeight}px;font-size:${fontHeight}px;transform-origin:0 0;`;
+                            textLayerDiv.appendChild(span);
+                        });
+
+                        function updateScale() {
+                            const displayWidth = canvas.offsetWidth;
+                            if (displayWidth > 0) {
+                                textLayerDiv.style.transform = `scale(${displayWidth / viewport.width})`;
+                            }
+                        }
+                        updateScale();
+                        window.addEventListener('resize', updateScale);
+                    });
+                });
+            }
+        });
+
+        // 4. ANIMAZIONE FOGLIE
+        const leafContainer = document.getElementById('leaves');
+        for (let i = 0; i < 15; i++) {
+            const leaf = document.createElement('div');
+            leaf.className = 'leaf';
+            leaf.style.left = Math.random() * 100 + 'vw';
+            leaf.style.width = (Math.random() * 10 + 10) + 'px';
+            leaf.style.height = (Math.random() * 15 + 15) + 'px';
+            leaf.style.animationDuration = (Math.random() * 5 + 7) + 's';
+            leaf.style.animationDelay = -(Math.random() * 12) + 's';
+            leafContainer.appendChild(leaf);
+        }
+    </script>
 </body>
 </html>
