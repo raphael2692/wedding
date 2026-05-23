@@ -4,11 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Camilla e Raffaele - Partecipazione</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Great+Vibes&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <style>
         :root {
             --paper-color: #fcfaf7;
             --olive-green: #7a8d71;
+            --olive-dark: #4e5f47;
+            --olive-deep: #3a4835;
             --bg-texture: url('https://www.transparenttextures.com/patterns/natural-paper.png');
         }
 
@@ -17,7 +21,7 @@
             padding: 0;
             background-color: #f4f1ea;
             background-image: var(--bg-texture);
-            font-family: 'Georgia', serif;
+            font-family: 'Cormorant Garamond', Georgia, serif;
             min-height: 100vh;
         }
 
@@ -35,42 +39,167 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            transition: transform 1.2s ease-in-out, opacity 1s ease;
+            transition: transform 1.4s cubic-bezier(0.76, 0, 0.24, 1), opacity 1.2s ease;
+            overflow: hidden;
         }
 
         #cover.hidden {
-            transform: translateY(-100%); /* L'effetto "busta che si alza" */
+            transform: translateY(-100%);
             opacity: 0;
             pointer-events: none;
         }
 
+        /* Decorative corner frame */
+        .frame-corner {
+            position: absolute;
+            width: 55px;
+            height: 55px;
+        }
+        .frame-corner::before,
+        .frame-corner::after {
+            content: '';
+            position: absolute;
+            background-color: var(--olive-green);
+            opacity: 0.45;
+        }
+        .frame-corner::before { width: 100%; height: 1px; top: 0; left: 0; }
+        .frame-corner::after  { width: 1px; height: 100%; top: 0; left: 0; }
+        .fc-tl { top: 28px; left: 28px; }
+        .fc-tr { top: 28px; right: 28px; transform: rotate(90deg); }
+        .fc-bl { bottom: 28px; left: 28px; transform: rotate(270deg); }
+        .fc-br { bottom: 28px; right: 28px; transform: rotate(180deg); }
+
+        /* Botanical branch SVG top/bottom */
+        .botanical {
+            position: absolute;
+            opacity: 0.22;
+            pointer-events: none;
+        }
+        .botanical-top    { top: 20px; left: 50%; transform: translateX(-50%); }
+        .botanical-bottom { bottom: 20px; left: 50%; transform: translateX(-50%) rotate(180deg); }
+
+        /* Central card */
         .cover-content {
             text-align: center;
-            padding: 20px;
+            padding: 30px 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+        }
+
+        .couple-names {
+            font-family: 'Great Vibes', cursive;
+            font-size: clamp(2.8rem, 8vw, 4.8rem);
+            color: var(--olive-dark);
+            line-height: 1.1;
+            margin-bottom: 18px;
+            letter-spacing: 1px;
+        }
+
+        .ornament {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 22px;
+            color: var(--olive-green);
+            opacity: 0.7;
+        }
+        .ornament-line {
+            width: 60px;
+            height: 1px;
+            background: var(--olive-green);
+            opacity: 0.6;
+        }
+        .ornament-symbol {
+            font-size: 0.8rem;
+            letter-spacing: 4px;
+        }
+
+        .recipient-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--olive-green);
+            opacity: 0.7;
+            margin-bottom: 6px;
         }
 
         .recipient-text {
-            font-size: 1.5rem;
-            color: var(--olive-green);
-            margin-bottom: 30px;
+            font-size: clamp(1rem, 3.5vw, 1.4rem);
+            color: var(--olive-deep);
             font-style: italic;
+            font-weight: 300;
+            margin-bottom: 38px;
+            line-height: 1.5;
+            max-width: 480px;
+            text-align: center;
         }
 
+        /* Open button */
         .open-btn {
-            padding: 15px 40px;
-            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 36px;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.05rem;
+            font-weight: 400;
+            letter-spacing: 3px;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            background-color: transparent;
+            color: var(--olive-dark);
+            background: transparent;
             border: 1px solid var(--olive-green);
-            color: var(--olive-green);
             cursor: pointer;
-            transition: all 0.3s ease;
+            position: relative;
+            transition: color 0.35s ease, background 0.35s ease;
+            animation: btnPulse 3s ease-in-out infinite;
         }
+
+        /* Animated corner accents */
+        .open-btn::before,
+        .open-btn::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-color: var(--olive-dark);
+            border-style: solid;
+            transition: width 0.3s ease, height 0.3s ease, border-color 0.35s ease;
+        }
+        .open-btn::before { top: -4px; left: -4px; border-width: 1px 0 0 1px; }
+        .open-btn::after  { bottom: -4px; right: -4px; border-width: 0 1px 1px 0; }
 
         .open-btn:hover {
-            background-color: var(--olive-green);
-            color: white;
+            animation: none;
+            background: var(--olive-dark);
+            color: #fcfaf7;
+        }
+        .open-btn:hover::before,
+        .open-btn:hover::after {
+            width: 16px;
+            height: 16px;
+            border-color: #fcfaf7;
+        }
+
+        .open-btn .btn-icon {
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+        }
+        .open-btn:hover .btn-icon {
+            transform: translateX(4px);
+        }
+
+        .open-btn.pressed {
+            animation: none;
+            transform: scale(0.96);
+            opacity: 0.6;
+            transition: transform 0.15s ease, opacity 0.15s ease;
+        }
+
+        @keyframes btnPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(78, 95, 71, 0); }
+            50%       { box-shadow: 0 0 0 6px rgba(78, 95, 71, 0.1); }
         }
 
         /* --- CONTENUTO PDF --- */
@@ -164,11 +293,52 @@
 
     <!-- Copertina -->
     <div id="cover">
+        <!-- Corner frame -->
+        <div class="frame-corner fc-tl"></div>
+        <div class="frame-corner fc-tr"></div>
+        <div class="frame-corner fc-bl"></div>
+        <div class="frame-corner fc-br"></div>
+
+        <!-- Botanical branches -->
+        <svg class="botanical botanical-top" width="220" height="60" viewBox="0 0 220 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M110 58 C110 58 80 40 50 30 C30 23 10 28 2 20" stroke="#5a6b52" stroke-width="1.2" fill="none"/>
+            <path d="M110 58 C110 58 140 40 170 30 C190 23 210 28 218 20" stroke="#5a6b52" stroke-width="1.2" fill="none"/>
+            <ellipse cx="40" cy="26" rx="10" ry="5" transform="rotate(-25 40 26)" fill="#7a8d71"/>
+            <ellipse cx="22" cy="22" rx="8"  ry="4" transform="rotate(-40 22 22)" fill="#7a8d71"/>
+            <ellipse cx="58" cy="32" rx="9"  ry="4" transform="rotate(-10 58 32)" fill="#7a8d71"/>
+            <ellipse cx="180" cy="26" rx="10" ry="5" transform="rotate(25 180 26)"  fill="#7a8d71"/>
+            <ellipse cx="198" cy="22" rx="8"  ry="4" transform="rotate(40 198 22)"  fill="#7a8d71"/>
+            <ellipse cx="162" cy="32" rx="9"  ry="4" transform="rotate(10 162 32)"  fill="#7a8d71"/>
+            <ellipse cx="110" cy="52" rx="7"  ry="3" transform="rotate(0 110 52)"   fill="#7a8d71"/>
+        </svg>
+
+        <svg class="botanical botanical-bottom" width="220" height="60" viewBox="0 0 220 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M110 58 C110 58 80 40 50 30 C30 23 10 28 2 20" stroke="#5a6b52" stroke-width="1.2" fill="none"/>
+            <path d="M110 58 C110 58 140 40 170 30 C190 23 210 28 218 20" stroke="#5a6b52" stroke-width="1.2" fill="none"/>
+            <ellipse cx="40" cy="26" rx="10" ry="5" transform="rotate(-25 40 26)" fill="#7a8d71"/>
+            <ellipse cx="22" cy="22" rx="8"  ry="4" transform="rotate(-40 22 22)" fill="#7a8d71"/>
+            <ellipse cx="58" cy="32" rx="9"  ry="4" transform="rotate(-10 58 32)" fill="#7a8d71"/>
+            <ellipse cx="180" cy="26" rx="10" ry="5" transform="rotate(25 180 26)"  fill="#7a8d71"/>
+            <ellipse cx="198" cy="22" rx="8"  ry="4" transform="rotate(40 198 22)"  fill="#7a8d71"/>
+            <ellipse cx="162" cy="32" rx="9"  ry="4" transform="rotate(10 162 32)"  fill="#7a8d71"/>
+            <ellipse cx="110" cy="52" rx="7"  ry="3" transform="rotate(0 110 52)"   fill="#7a8d71"/>
+        </svg>
+
         <div class="cover-content">
-            <div class="recipient-text" id="guest-name">
-                Per voi...
+            <div class="couple-names">Camilla &amp; Raffaele</div>
+
+            <div class="ornament">
+                <div class="ornament-line"></div>
+                <span class="ornament-symbol">✦</span>
+                <div class="ornament-line"></div>
             </div>
-            <button class="open-btn" onclick="openInvitation()">Apri l'invito</button>
+
+            <div class="recipient-label">Per</div>
+            <div class="recipient-text" id="guest-name">voi</div>
+
+            <button class="open-btn" id="open-btn" onclick="openInvitation()">
+                Apri l'invito <span class="btn-icon">→</span>
+            </button>
         </div>
     </div>
 
@@ -182,23 +352,27 @@
         // 1. GESTIONE PARAMETRI URL
         function getGuestNames() {
             const params = new URLSearchParams(window.location.search);
-            const n1 = params.get('nome_1');
-            const n2 = params.get('nome_2');
-
-            if (n1 && n2) {
-                return `Cara ${n1} e Caro ${n2},`;
-            } else if (n1) {
-                return `Gentile ${n1},`;
+            const names = [];
+            for (let i = 1; i <= 5; i++) {
+                const n = params.get(`nome_${i}`);
+                if (n) names.push(n);
             }
-            return "Per voi...";
+            if (names.length === 0) return 'voi';
+            if (names.length === 1) return names[0];
+            return names.slice(0, -1).join(', ') + ' e ' + names[names.length - 1];
         }
 
         document.getElementById('guest-name').innerText = getGuestNames();
 
         // 2. APERTURA INVITO
         function openInvitation() {
-            document.getElementById('cover').classList.add('hidden');
-            document.getElementById('main-content').classList.add('visible');
+            const btn = document.getElementById('open-btn');
+            btn.classList.add('pressed');
+            btn.disabled = true;
+            setTimeout(() => {
+                document.getElementById('cover').classList.add('hidden');
+                document.getElementById('main-content').classList.add('visible');
+            }, 300);
         }
 
         // 3. RENDER PDF (PDF.js)
