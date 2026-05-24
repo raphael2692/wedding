@@ -4,7 +4,11 @@
       "WebSearch",
       "Bash(gh --version)",
       "Bash(git --version)",
-      "PowerShell(gh --version)"
+      "PowerShell(gh --version)",
+      "PowerShell(git -C c:\\\\dev\\\\wedding status)",
+      "PowerShell(git -C c:\\\\dev\\\\wedding log --oneline -5)",
+      "PowerShell(git -C c:\\\\dev\\\\wedding log --oneline origin/master..master)",
+      "PowerShell(git -C c:\\\\dev\\\\wedding log --oneline master..origin/master)"
     ]
   }
 }

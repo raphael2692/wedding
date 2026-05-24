@@ -23,6 +23,7 @@
             background-image: var(--bg-texture);
             font-family: 'Cormorant Garamond', Georgia, serif;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
         /* --- COPERTINA (COVER) --- */
@@ -370,6 +371,7 @@
             btn.classList.add('pressed');
             btn.disabled = true;
             setTimeout(() => {
+                window.scrollTo(0, 0);
                 document.getElementById('cover').classList.add('hidden');
                 document.getElementById('main-content').classList.add('visible');
             }, 300);
@@ -382,12 +384,19 @@
 
         pdfjsLib.getDocument(url).promise.then(pdf => {
             const container = document.getElementById('pdf-render-container');
+            // Pre-create wrappers in order so pages always appear sequentially
+            const wrappers = [];
+            for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'page-wrapper';
+                container.appendChild(wrapper);
+                wrappers.push(wrapper);
+            }
+
             for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
                 pdf.getPage(pageNum).then(page => {
                     const viewport = page.getViewport({ scale: 2 });
-
-                    const wrapper = document.createElement('div');
-                    wrapper.className = 'page-wrapper';
+                    const wrapper = wrappers[pageNum - 1];
 
                     const canvas = document.createElement('canvas');
                     const ctx = canvas.getContext('2d');
@@ -397,11 +406,10 @@
 
                     const textLayerDiv = document.createElement('div');
                     textLayerDiv.className = 'textLayer';
-                    textLayerDiv.style.width = viewport.width + 'px';
+                    // Use 100% width so it never overflows on mobile
+                    textLayerDiv.style.width = '100%';
                     textLayerDiv.style.height = viewport.height + 'px';
                     wrapper.appendChild(textLayerDiv);
-
-                    container.appendChild(wrapper);
 
                     page.render({ canvasContext: ctx, viewport: viewport });
 
